@@ -1,0 +1,36 @@
+dist: trusty
+sudo: required
+language: node_js
+node_js:
+- 7.9.0
+branches:
+  only:
+  - master
+os:
+  - linux
+addons:
+  chrome: stable
+env:
+  global:
+    - DBUS_SESSION_BUS_ADDRESS=/dev/null
+before_install:
+  - export CHROME_BIN=chromium-browser
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+install:
+- npm install
+script:
+- ng build
+#- npm run e2e
+deploy:
+  edge: true
+  provider: bluemixcloudfoundry
+  skip_cleanup: true
+  api: https://api.ng.bluemix.net
+  username: $BLUEMIX_USER
+  password: $BLUEMIX_PASS
+  organization: $BLUEMIX_ORGANIZATION
+  space: $BLUEMIX_SPACE
+  app: ChatApp
+  on:
+    repo: PradnyaM14/ChatApp

@@ -1,0 +1,34 @@
+h2    {
+    width: 135px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chatbox    {
+    background-color: aliceblue;
+    height: 70%;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chat   {
+    min-height: 40px;
+}
+
+.inputbox   {
+    background-color: ghostwhite;
+    min-height: 30px;
+}
+
+ul  {
+    list-style-type: none;
+}
+
+.user   {
+    color: cornflowerblue;
+}
+
+.bot    {
+    color: mediumseagreen;
+}

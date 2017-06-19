@@ -1,0 +1,8 @@
+applications:
+- name: ChatApp
+  path: .
+  instances: 1
+  domain: mybluemix.net
+  host: bankchatapp
+  disk_quota: 1024M
+  memory: 128M
