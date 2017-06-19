@@ -32,11 +32,6 @@ export class ChatService {
                    .catch(this.handleErrorObservable);
   }
   
-  return this.http.post(this.url, payload, options).toPromise()
-           .then(this.extractData)
-           .catch(this.handleErrorPromise);
-  }
-  
   private extractData(res: Response) {
 	let body = res.json();
     this.context = JSON.stringify( body.context )
