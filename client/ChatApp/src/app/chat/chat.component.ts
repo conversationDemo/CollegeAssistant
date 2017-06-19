@@ -17,7 +17,8 @@ export class ChatComponent implements OnInit {
   chatMessages: string = "";
   lastMessage: string = "";
   errorMessage: string = "";
-  
+  context: string = '{}'
+
   constructor(private chatService: ChatService) { }
 
   ngOnInit() {
@@ -39,9 +40,27 @@ export class ChatComponent implements OnInit {
     
     //if ( !message ) { return; }
     
-    this.chatService.sendMessageWithObservable(this.lastMessage).subscribe(
-                       replies  => this.showReplies(replies),
+    console.log("sendMessage : "+this.context)
+    this.chatService.sendMessageWithObservable(this.lastMessage, this.context).subscribe(
+                       (result)  => this.processOutput(result),
                        error =>  this.errorMessage = <any>error);
+  }
+  
+  processOutput( result ) {
+   
+  let output = result[0]
+  let context = result[1]
+    if (output.action === "student_count") {
+        
+        context['student_count'] = 2
+        this.context = JSON.stringify(context)
+        
+        console.log("processOutput: "+ this.context)
+    }
+    else {
+        this.context = '{}'
+    }
+    this.showReplies(output.text)
   }
   
   showReplies(replies: string[]) {
