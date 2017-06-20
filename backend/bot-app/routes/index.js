@@ -37,6 +37,26 @@ var conversation = new Conversation({
   version: 'v1'
 });
 
+require('dotenv').load();
+
+// Load the Cloudant library.
+var Cloudant = require('cloudant');
+
+// Initialize Cloudant with settings from .env
+var username = process.env.CLOUDANT_USERNAME || "nodejs";
+var password = process.env.CLOUDANT_PASSWORD;
+var cloudant = Cloudant({account:username, password:password});
+
+cloudant.db.list(function(err, allDbs) {
+  console.log('All my databases: %s', allDbs.join(', '))
+});
+
+var db = cloudant.db.use("college_assistant");
+  db.get("student1", function(err, data) {
+    // The rest of your code goes here. For example:
+    console.log("Found student:", data);
+  });
+
 // Endpoint to be call from the client side
 router.post('/api/message', function(req, res) {
   var workspace = process.env.WORKSPACE_ID || '<workspace-id>';

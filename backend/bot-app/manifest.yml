@@ -2,8 +2,10 @@ applications:
 - path: .
   instances: 1
   domain: mybluemix.net
-  name: MyBotApp
-  host: mybotapp
+  name: CollegeAssistant
+  host: collegeassistant
   disk_quota: 1024M
   random-route: true
   memory: 256M
+  services:
+  - Cloudant NoSQL DB-kf
