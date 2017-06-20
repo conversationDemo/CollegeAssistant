@@ -42,29 +42,19 @@ export class ChatComponent implements OnInit {
     
     console.log("sendMessage : "+this.context)
     this.chatService.sendMessageWithObservable(this.lastMessage, this.context).subscribe(
-                       (result)  => this.processOutput(result),
+                       result  => this.processOutput(result),
                        error =>  this.errorMessage = <any>error);
   }
   
   processOutput( result ) {
    
-  let output = result[0]
-  let context = result[1]
-    if (output.action === "student_count") {
-        
-        context['student_count'] = 2
-        this.context = JSON.stringify(context)
-        
-        console.log("processOutput: "+ this.context)
-    }
-    else {
-        this.context = '{}'
-    }
+    let output = result[0]
+    this.context = JSON.stringify(result[1])
     this.showReplies(output.text)
   }
   
   showReplies(replies: string[]) {
-  
+    console.log("replies: "+ replies)  
     for(var i = 0; i < replies.length; i++) {
         this.messages.push(new ChatMessage("Bot", replies[i]) );
     }

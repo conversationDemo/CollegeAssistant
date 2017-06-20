@@ -9,7 +9,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class ChatService {
 
-  url: string = "http://localhost:6002/api/message"
+  url: string = "http://localhost:6004/api/message"
   //url: string = "https://mybotapp.mybluemix.net/api/message";
   
   constructor(private http:Http) { }
