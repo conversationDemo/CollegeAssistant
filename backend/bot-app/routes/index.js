@@ -106,6 +106,26 @@ router.post('/api/message', function(req, res) {
   });
 });
 
+router.post('/api/collegeinfo', function(req, res) {
+    
+    var data = { output: { text: [] } }
+    db.get("college", function(err, db_data) {
+        data.output.text = [db_data.info]
+        console.log("data.output.text: ", data.output.text)
+        return res.json(data);
+    });
+});
+
+router.post('/api/courses', function(req, res) {
+    
+    var data = { output: { text: [] } }
+    db.get("college", function(err, db_data) {
+        data.output.text = ["Courses offered are:\n" + db_data.courses.join(',\n')]
+        console.log("data.output.text: ", data.output.text)
+        return res.json(data);
+    });
+});
+
 /**
  * Updates the response text using the intent confidence
  * @param  {Object} input The request to the Conversation service
