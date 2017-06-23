@@ -49,17 +49,27 @@ export class ChatComponent implements OnInit {
   processOutput( result ) {
    
   let output = result[0]
+  console.log(JSON.stringify(output));
   let context = result[1]
-    if (output.action === "student_count") {
-        
-        context['student_count'] = 2
-        this.context = JSON.stringify(context)
-        
-        console.log("processOutput: "+ this.context)
+  let intent = result[2];
+
+  if (intent.length) {
+      if (intent[0].intent === 'holiday_info') {
+        this.context = JSON.stringify(context);
+      }
     }
-    else {
-        this.context = '{}'
-    }
+
+  else if(output.action === "student_count") {
+      
+      context['student_count'] = 2
+      this.context = JSON.stringify(context);
+      
+      console.log("processOutput: "+ this.context)
+  }
+  else {
+      this.context = '{}'
+  }
+    
     this.showReplies(output.text)
   }
   

@@ -51,11 +51,8 @@ cloudant.db.list(function(err, allDbs) {
   console.log('All my databases: %s', allDbs.join(', '))
 });
 
-var db = cloudant.db.use("college_assistant");
-  db.get("student1", function(err, data) {
-    // The rest of your code goes here. For example:
-    console.log("Found student:", data);
-  });
+var db = cloudant.db.use("college_assistant_db");
+  
 
 // Endpoint to be call from the client side
 router.post('/api/message', function(req, res) {
@@ -81,11 +78,54 @@ router.post('/api/message', function(req, res) {
       return res.status(err.code || 500).json(err);
     }
     console.log("---data ", data);
-      if (data.output.action === "student_count") {
+
+    var inLoop = true;
+
+    if(data.intents.length){
+      if(data.intents[0].intent==='holiday_info' && data.entities.length===0){
+        console.log("In Holiday info");
+        inLoop = false;
+        return res.json(updateMessage(payload, data));
+      }
+
+      if(data.intents[0].intent==='holiday_info' && data.entities[0].entity==='year'){
+        console.log("In Holiday info second Databse operation");
+        db.get("holiday_list", function(err, result) {
+            // The rest of your code goes here. For example:
+            console.log("Found student:", result);
+            inLoop = false;
+            var dataSet = result[data.entities[0].value];
+            data.output.text=dataSet;
+            console.log('------------------------------'+JSON.stringify(data));
+             return res.json(updateMessage(payload, data));
+          }); 
+      }
+    }
+
+    if(data.entities.length){
+      if(data.intents.length===0 && data.entities[0].entity==='year'){
+        if(data.context.hasOwnProperty('holiday_list')){
+          inLoop = false;
+          console.log("In Holiday info Databse operation");
+          db.get("holiday_list", function(err, result) {
+            // The rest of your code goes here. For example:
+            console.log("Found student:", result);
+            var dataSet = result[data.entities[0].value];
+            data.output.text=dataSet;
+            console.log('------------------------------'+JSON.stringify(data));
+             return res.json(updateMessage(payload, data));
+          });         
+        }
+      }
+    }
+    if(inLoop){
+      return res.json(updateMessage(payload, data));
+    }
+    /*if (data.output.action === "student_count") {
         data.context['student_count'] = 2
           console.log("sending student_count = 2")
     }
-    return res.json(updateMessage(payload, data));
+    return res.json(updateMessage(payload, data));*/
   });
 });
 
@@ -100,7 +140,7 @@ function updateMessage(input, response) {
   if (!response.output) {
     response.output = {};
   } else {
-      console.log("---response: ", response)
+      //console.log("---response: ", response)
     return response;
   }
   if (response.intents && response.intents[0]) {
@@ -119,7 +159,7 @@ function updateMessage(input, response) {
     }
   }
   response.output.text = responseText;
-  console.log("---response: ", response)
+  //console.log("---response: ", response)
   return response;
 }
 

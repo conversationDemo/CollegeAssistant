@@ -1,15 +1,23 @@
-<h2>Chat App</h2>
-<div class="chatbox">
-    <div class="chat">
-        <ul>  
-            <li *ngFor="let chatMessage of messages">
-                <span [ngClass]="(chatMessage.sentBy=='User')?'user':'bot'">{{ chatMessage.sentBy }}: {{ chatMessage.message }}</span>
-            </li>
-        </ul>
+<div id="wrapper">
+    <div id="menu">
+        <p class="welcome">Welcome, <b></b></p>
+        <p class="logout"><a id="exit" href="#">Exit Chat</a></p>
+        <div style="clear:both"></div>
     </div>
-      
-    <form class="inputbox" (ngSubmit)="onSubmit($event)" #appChat="ngForm">
-        <input type="text" id="message" [(ngModel)]="lastMessage" name="message">
-        <button type="submit" >Send</button>
-    </form>
+     
+    <div id="chatbox" >
+      <div *ngFor="let chatMessage of messages">
+        <div id="question" class="questionCls"  *ngIf="chatMessage.sentBy =='User'">
+          {{chatMessage.message}}
+      </div>
+      <div id="answer" class="answerCls" *ngIf="chatMessage.sentBy !=='User'">
+        {{chatMessage.message}}
+      </div>
+      </div>
+    </div>
+     
+    <div  class="inputContainer">
+        <input type="text" id="usermsg" size="63" [(ngModel)]="lastMessage">        
+        <input name="submitmsg" type="button" id="submitmsg" value="Send" (click)="onSubmit($event)" />
+    </div>
 </div>

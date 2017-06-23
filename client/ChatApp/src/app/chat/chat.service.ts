@@ -9,7 +9,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class ChatService {
 
-  url: string = "http://localhost:6002/api/message"
+  url: string = "http://localhost:6007/api/message"
   //url: string = "https://mybotapp.mybluemix.net/api/message";
   
   constructor(private http:Http) { }
@@ -32,7 +32,8 @@ export class ChatService {
   
   private extractData(res: Response) {
 	let body = res.json();
-    return ([body.output, body.context] || [] );
+  console.log("response"+JSON.stringify(body));
+    return ([body.output, body.context,body.intents] || [] );
   }
     
   private handleErrorObservable (error: Response | any) {
