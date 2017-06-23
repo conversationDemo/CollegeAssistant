@@ -20,7 +20,6 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 
-
 var Conversation = require('watson-developer-cloud/conversation/v1'); // watson sdk
 
 var bot_config = require("../bot-config.json");
@@ -51,7 +50,7 @@ cloudant.db.list(function(err, allDbs) {
   console.log('All my databases: %s', allDbs.join(', '))
 });
 
-var db = cloudant.db.use("college_assistant_db");
+var db = cloudant.db.use("college_assistant");
   
 
 // Endpoint to be call from the client side
@@ -118,15 +117,53 @@ router.post('/api/message', function(req, res) {
         }
       }
     }
+   
+      if (data.output.action === "student_count") {
+          inLoop = false;
+            data.context['student_count'] = 2
+            console.log("sending student_count = 2")
+            return res.json(updateMessage(payload, data));
+      }
+      else if (data.output.action === "college_info" || data.output.action === "courses_offered") {
+        inLoop = false;
+            console.log("fetching college info")
+            db.get("college", function(err, db_data) {
+                if (data.output.action === "college_info")  {
+                    data.output.text = [db_data.info]
+                    console.log("data.output.text: ", data.output.text)
+                }
+                else    {
+                    data.output.text = ["Courses offered are:\n" + db_data.courses.join(',\n')]
+                    console.log("data.output.text: ", data.output.text)
+                }
+                return res.json(updateMessage(payload, data));
+            });
+      }
     if(inLoop){
       return res.json(updateMessage(payload, data));
     }
-    /*if (data.output.action === "student_count") {
-        data.context['student_count'] = 2
-          console.log("sending student_count = 2")
-    }
-    return res.json(updateMessage(payload, data));*/
-  });
+    
+});
+});
+
+router.post('/api/collegeinfo', function(req, res) {
+    
+    var data = { output: { text: [] } }
+    db.get("college", function(err, db_data) {
+        data.output.text = [db_data.info]
+        console.log("data.output.text: ", data.output.text)
+        return res.json(data);
+    });
+});
+
+router.post('/api/courses', function(req, res) {
+    
+    var data = { output: { text: [] } }
+    db.get("college", function(err, db_data) {
+        data.output.text = ["Courses offered are:\n" + db_data.courses.join(',\n')]
+        console.log("data.output.text: ", data.output.text)
+        return res.json(data);
+    });
 });
 
 /**
@@ -140,7 +177,7 @@ function updateMessage(input, response) {
   if (!response.output) {
     response.output = {};
   } else {
-      //console.log("---response: ", response)
+      console.log("---response : ", response)
     return response;
   }
   if (response.intents && response.intents[0]) {
@@ -303,6 +340,4 @@ function sendTextResponseToSender(sender, msg, callback) {
     }
   }
 }
-
 module.exports = router;
-

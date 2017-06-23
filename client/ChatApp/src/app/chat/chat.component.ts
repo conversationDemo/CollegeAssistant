@@ -42,12 +42,12 @@ export class ChatComponent implements OnInit {
     
     console.log("sendMessage : "+this.context)
     this.chatService.sendMessageWithObservable(this.lastMessage, this.context).subscribe(
-                       (result)  => this.processOutput(result),
+                       result  => this.processOutput(result),
                        error =>  this.errorMessage = <any>error);
   }
   
   processOutput( result ) {
-   
+
   let output = result[0]
   console.log(JSON.stringify(output));
   let context = result[1]
@@ -69,12 +69,12 @@ export class ChatComponent implements OnInit {
   else {
       this.context = '{}'
   }
-    
+
     this.showReplies(output.text)
   }
   
   showReplies(replies: string[]) {
-  
+    console.log("replies: "+ replies)  
     for(var i = 0; i < replies.length; i++) {
         this.messages.push(new ChatMessage("Bot", replies[i]) );
     }
